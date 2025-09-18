@@ -6,7 +6,7 @@ import numpy as np
 from contextlib import contextmanager
 from PyQt5.QtCore import QObject, pyqtSignal
 from functools import wraps
-from tucsenspec.camera_hardware import RealHardware, SimulatedHardware
+from camera_hardware import RealHardware, SimulatedHardware
 
 def synchronized(func):
     @wraps(func)
