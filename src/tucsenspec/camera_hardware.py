@@ -91,7 +91,6 @@ class RealHardware(CameraHardwareBase):
             return
 
         self.open_camera()
-        breakpoint()
         self.set_hardware_binning()
         self.set_auto_exposure(0)
         self.set_exposure_time(self.camera.acqtime)

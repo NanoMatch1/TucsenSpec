@@ -31,7 +31,10 @@ Classifier: Operating System :: Windows
 Requires-Python: >=3.9
 Description-Content-Type: text/markdown
 License-File: LICENSE
-Requires-Dist: numpy>=1.24
+Requires-Dist: numpy>=2.3.3
+Requires-Dist: PyQt5==5.15.11
+Requires-Dist: PyQt5-Qt5==5.15.2
+Requires-Dist: PyQt5_sip==12.17.0
 Dynamic: license-file
 
 # Introduction
@@ -92,6 +95,6 @@ When interfacing with PyQt5 GUI elements, cam.temp_signal emits the temperature 
 
 # Simulated Camera
 
-Use `SimulatedHardware` for testing without physical hardware. It can generate synthetic signals for development and debugging.
+Use `SimulatedHardware` for testing without physical hardware. It can generate synthetic signals for development and debugging. In version 1.0, there is a more complex simulated_camera.py module, which is for legacy purposes and will be extracted in future updates.
 
 
