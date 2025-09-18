@@ -1,10 +1,8 @@
 from abc import ABC, abstractmethod
-from instrument_base import Instrument
 
-class Camera(Instrument, ABC):
+class Camera(ABC):
     """
-    Abstract base class for all laser instruments. Defines the required interface and
-    registers UI-callable commands for interactive control.
+    Abstract base class for cameras. Defines the required interface and registers UI-callable commands for interactive control.
     """
     def __init__(self):
         super().__init__()

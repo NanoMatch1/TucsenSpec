@@ -3,9 +3,9 @@ requires = ["setuptools>=69", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "tucsenbox"
+name = "tucsenspec"
 version = "0.1.0"
-description = "Wrapper for TUCSEN scientific cameras (specifically tested on Dhyana 400BSI V3). Exposes convenient methods for the spectroscopist, such as 'set region of interest' and 'acquisition time', and exports data as a numpy array"
+description = "Wrapper for TUCSEN scientific cameras (specifically tested on Dhyana 400BSI V3) aimed at Spectroscopic methids. Exposes convenient methods such as 'set region of interest' and 'acquisition time', and exports data as a numpy array."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { file = "LICENSE" }
@@ -25,7 +25,7 @@ dependencies = [
 # Tell setuptools to find packages inside src/
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["tucsenbox*"]
+include = ["tucsenspec*"]
 
 [tool.setuptools_scm]
 version_scheme = "post-release"

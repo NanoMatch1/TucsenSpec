@@ -1,14 +1,12 @@
-from contextlib import contextmanager
-# import ctypes
-# from ctypes import byref
 import os
 import threading
 import time
 import numpy as np
+
+from contextlib import contextmanager
 from PyQt5.QtCore import QObject, pyqtSignal
 from functools import wraps
-
-from camera_hardware import RealHardware, SimulatedHardware
+from tucsenspec.camera_hardware import RealHardware, SimulatedHardware
 
 def synchronized(func):
     @wraps(func)
@@ -24,9 +22,8 @@ class CameraHardwareBase:
     def grab_frame(self): raise NotImplementedError
     def initialise(self): raise NotImplementedError
 
-
-
 class TucsenCamera(QObject):
+    """Wrapper class for Tucsen cameras using the TUCam SDK. Intended to be used by spectroscopists. Exposes useful methods and expects integration with PyQt GUI."""
     _instance_lock = threading.Lock()
     _instance_active = False
 

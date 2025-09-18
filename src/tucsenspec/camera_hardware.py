@@ -6,7 +6,7 @@ from contextlib import contextmanager
 from ctypes import byref
 
 from ctypes import pointer, cast, POINTER
-from tucsen.TUCam import (
+from tucsenspec.TUCam import (
     TUCAM_ROI_ATTR,
     TUCAM_Buf_Alloc,
     TUCAM_Buf_Release,
@@ -71,6 +71,8 @@ class CameraHardwareBase:
 
 
 class RealHardware(CameraHardwareBase):
+    """Real hardware interface for Tucsen cameras using the TUCam SDK."""
+    
     def __init__(self, camera):
         self.camera = camera
         self.interface = camera.interface

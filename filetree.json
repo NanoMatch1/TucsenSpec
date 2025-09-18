@@ -1,0 +1,119 @@
+[
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\tests"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\ai_filetree.json"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\LICENSE"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\pyproject.toml"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\README.md"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\base_camera.py"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\camera_hardware.py"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\simulated_camera.py"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\TUCam.py"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\tucsencam.py"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\__init__.py"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x64"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x86"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x64\\clallserial.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x64\\mfc120u.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x64\\msvcp120.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x64\\msvcr120.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x64\\MultiCam.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x64\\phxlx64.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x64\\TUCam.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x64\\TUCam.lib"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x64\\tuimgcv_core2410.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x64\\tuimgcv_highgui2410.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x64\\tuimgcv_imgproc2410.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x86\\clallserial.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x86\\mfc120u.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x86\\msvcp120.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x86\\msvcr120.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x86\\MultiCam.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x86\\phxlw32.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x86\\TUCam.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x86\\TUCam.lib"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x86\\tuimgcv_core2410.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x86\\tuimgcv_highgui2410.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\src\\tucsenspec\\lib\\x86\\tuimgcv_imgproc2410.dll"
+    },
+    {
+        "FullName":  "C:\\Users\\Sam\\matchbook\\TUCSEN_camera\\tests\\test_05_wait_frame.py"
+    }
+]
