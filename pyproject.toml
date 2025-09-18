@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tucsenbox"
+version = "0.1.0"
+description = "Wrapper for TUCSEN scientific cameras (specifically tested on Dhyana 400BSI V3). Exposes convenient methods for the spectroscopist, such as 'set region of interest' and 'acquisition time', and exports data as a numpy array"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { file = "LICENSE" }
+authors = [{ name = "Sam Brooke", email = "sjbrooke1993@gmail.com" }]
+keywords = ["imaging", "spectroscopy"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: Windows", # Linux available on request 
+]
+
+# Runtime deps
+dependencies = [
+  "numpy>=1.24",
+]
+
+# Tell setuptools to find packages inside src/
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["tucsenbox*"]
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+
+# If you need to ship non-.py files (DLLs, data, etc.)
+[tool.setuptools.package-data]
+yourpkg = ["lib/*.*"]
