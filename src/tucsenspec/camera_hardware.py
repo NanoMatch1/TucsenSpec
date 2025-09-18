@@ -91,6 +91,7 @@ class RealHardware(CameraHardwareBase):
             return
 
         self.open_camera()
+        breakpoint()
         self.set_hardware_binning()
         self.set_auto_exposure(0)
         self.set_exposure_time(self.camera.acqtime)
@@ -136,7 +137,6 @@ class RealHardware(CameraHardwareBase):
         self._stream_open = False
 
     def grab_frame(self, timeout=50000):
-        breakpoint()
         ret = TUCAM_Buf_WaitForFrame(self.TUCAMOPEN.hIdxTUCam, pointer(self.data.m_frame), timeout)
         if ret != TUCAMRET.TUCAMRET_SUCCESS:
             self.camera.logger.warning(f"TUCAM: Frame acquisition timeout or error. Return code: {ret}")
@@ -267,6 +267,7 @@ class RealHardware(CameraHardwareBase):
 
     def open_camera(self, Idx=0):
         if  Idx >= self.TUCAMINIT.uiCamCount:
+            self.logger.error(f"TUCAM: Invalid camera index {Idx}. Available cameras: {self.TUCAMINIT.uiCamCount}. Check Camera is connected.")
             return
 
         self.logger.info('Opening camera...')

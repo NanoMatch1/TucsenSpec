@@ -1,0 +1,6 @@
+numpy==2.3.3
+PyQt5==5.15.11
+PyQt5-Qt5==5.15.2
+PyQt5_sip==12.17.0
+# Editable Git install with no remote (tucsenspec==0.1.0)
+-e c:\users\sam\matchbook\tucsen_camera

@@ -2,6 +2,38 @@ import time
 import threading
 import numpy as np
 import traceback
+import os
+
+class DummyMicroscope:
+    def __init__(self):
+        self.wavelength_axis = np.arange(2048)
+        self.laser_wavelengths = {'l1': 785}
+        self.laser_calibrated = False
+        self.laser_wavelength_calibrated = 785
+
+class DummyLaser:
+    def __init__(self):
+        self.status = 'ON'
+        self.current_power = 4.5
+
+class DummyLogger:
+    def getChild(self, name):
+        return self
+    def coms(self, msg): print(f"[COMS] {msg}")
+    def info(self, msg): print(f"[INFO] {msg}")
+    def debug(self, msg): print(f"[DEBUG] {msg}")
+    def warning(self, msg): print(f"[WARNING] {msg}")
+    def error(self, msg): print(f"[ERROR] {msg}")
+
+class DummyInterface:
+    def __init__(self, **kwargs):
+        self.scriptDir = os.path.dirname(os.path.abspath(__file__))
+        self.simulate = True
+
+        self.laser = DummyLaser()
+        self.logger = DummyLogger()
+        self.microscope = DummyMicroscope()
+        self.acq_ctrl = DummyAcquisitionControl()
 
 class DummyAcquisitionControl:
     """A dummy acquisition control class to simulate the acquisition control interface."""
@@ -186,16 +218,8 @@ class SimulatedCameraInterface:
         # Create the spectral line (same for all rows)
         spectrum_image = background + laser_signal + noise
         spectrum_image = np.clip(spectrum_image, 0, 65535).astype(np.uint16)
-        
-        return spectrum_image
-    
-    def grab_frame_safe(self, timeout=100000):
-        '''Workaround for temperature checking'''
-        # Simulate a temperature check
-        temperature = self.check_camera_temperature()
-        image_data = self.grab_frame(timeout)
 
-        return image_data
+        return spectrum_image
 
     
     def grab_frame(self, timeout=100000):        

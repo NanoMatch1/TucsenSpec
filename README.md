@@ -56,6 +56,6 @@ When interfacing with PyQt5 GUI elements, cam.temp_signal emits the temperature 
 
 # Simulated Camera
 
-Use `SimulatedHardware` for testing without physical hardware. It can generate synthetic signals for development and debugging.
+Use `SimulatedHardware` for testing without physical hardware. It can generate synthetic signals for development and debugging. In version 1.0, there is a more complex simulated_camera.py module, which is for legacy purposes and will be extracted in future updates.
 
 

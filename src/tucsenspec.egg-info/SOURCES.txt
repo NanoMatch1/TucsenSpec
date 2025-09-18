@@ -1,0 +1,15 @@
+LICENSE
+README.md
+pyproject.toml
+src/tucsenspec/TUCam.py
+src/tucsenspec/__init__.py
+src/tucsenspec/base_camera.py
+src/tucsenspec/camera_hardware.py
+src/tucsenspec/simulated_camera.py
+src/tucsenspec/tucsencam.py
+src/tucsenspec.egg-info/PKG-INFO
+src/tucsenspec.egg-info/SOURCES.txt
+src/tucsenspec.egg-info/dependency_links.txt
+src/tucsenspec.egg-info/requires.txt
+src/tucsenspec.egg-info/top_level.txt
+tests/test_05_wait_frame.py

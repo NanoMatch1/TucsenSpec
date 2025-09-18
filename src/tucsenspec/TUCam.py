@@ -19,7 +19,7 @@ def get_camera_lib_path():
     system = platform.system().lower()
     arch = platform.machine().lower()
     # Package and subfolder setup
-    package = "tucsen.lib"
+    package = "tucsenspec.lib"
     if system == "windows":
         folder = "x64" if arch in ("amd64", "x86_64") else "x86"
         libname = "TUCam.dll"
@@ -33,7 +33,6 @@ def get_camera_lib_path():
     return dll_path
 
 
-#加载SDK动态库
 # 32bit
 #TUSDKdll = OleDLL("./lib/x86/TUCam.dll")
 # 64bit
@@ -41,8 +40,7 @@ def get_camera_lib_path():
 
 camera_lib_path = get_camera_lib_path()
 print(camera_lib_path)
-breakpoint()
-TUSDKdll = OleDLL(camera_lib_path)
+TUSDKdll = OleDLL(str(camera_lib_path))
 
 #  class typedef enum TUCAM status:
 class TUCAMRET(Enum):
