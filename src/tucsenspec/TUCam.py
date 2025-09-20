@@ -39,7 +39,14 @@ def get_camera_lib_path(manual=None):
 # TUSDKdll = OleDLL("./lib/x64/TUCam.dll")
 
 camera_lib_path = get_camera_lib_path()
+# camera_lib_path = r"C:\Program Files\TUCam_SDK\samples code\console\Python\lib\x64\TUCam.dll"
 print(camera_lib_path)
+# Ensure dependent DLLs in the same folder are discoverable (Windows 10 security changes)
+try:
+    if hasattr(os, 'add_dll_directory'):
+        os.add_dll_directory(str(camera_lib_path.parent))
+except Exception:
+    pass
 TUSDKdll = WinDLL(str(camera_lib_path))
 
 #  class typedef enum TUCAM status:
@@ -805,8 +812,8 @@ TUCAM_Buf_AbortWait.argtypes = [c_void_p]
 TUCAM_Buf_AbortWait.restype  = TUCAMRET
 TUCAM_Buf_WaitForFrame   = TUSDKdll.TUCAM_Buf_WaitForFrame
 TUCAM_Buf_WaitForFrame.argtypes = [c_void_p, POINTER(TUCAM_FRAME), c_int32]
-# Use numeric restype to avoid Enum mapping errors for unknown/signed codes
-TUCAM_Buf_WaitForFrame.restype  = c_int32
+# Use unsigned to match SDK and avoid OverflowError for HRESULT-like codes
+TUCAM_Buf_WaitForFrame.restype  = c_uint32
 TUCAM_Buf_CopyFrame      = TUSDKdll.TUCAM_Buf_CopyFrame
 TUCAM_Buf_CopyFrame.argtypes = [c_void_p, POINTER(TUCAM_FRAME)]
 TUCAM_Buf_CopyFrame.restype  = TUCAMRET

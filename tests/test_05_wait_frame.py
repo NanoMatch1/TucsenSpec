@@ -74,11 +74,10 @@ class Tucam():
                 try:
                     result = TUCAM_Buf_WaitForFrame(self.TUCAMOPEN.hIdxTUCam, pointer(m_frame), timeout_ms)
                     code = int(result)
-                except OverflowError:
-                    code = -2147483128  # treat as TIMEOUT
-                except OSError as e:
-                    code = getattr(e, 'winerror', None) or getattr(e, 'errno', None) or -2147483128
-                if code > 0:
+                except Exception:
+                    code = 0x80000208
+                # SDK success codes: 1 (SUCCESS), 2 (RECEIVE_FINISH), 3 (EXTERNAL_TRIGGER)
+                if code in (int(TUCAMRET.TUCAMRET_SUCCESS.value), int(TUCAMRET.TUCAMRET_RECEIVE_FINISH.value), int(TUCAMRET.TUCAMRET_EXTERNAL_TRIGGER.value)):
                     print(
                         "Grab success: i=%d w=%d h=%d ch=%d bpp=%d size=%d" % (
                             i, m_frame.usWidth, m_frame.usHeight, m_frame.ucChannels, m_frame.ucElemBytes, m_frame.uiImgSize
@@ -88,10 +87,13 @@ class Tucam():
                 else:
                     # Map a few common errors if possible
                     mapped = None
-                    for e in TUCAMRET:
-                        if int(e.value) == code:
-                            mapped = e
-                            break
+                    try:
+                        for e in TUCAMRET:
+                            if int(e.value) == code:
+                                mapped = e
+                                break
+                    except Exception:
+                        pass
                     print(f"Grab failure: i={i} ret={code} mapped={mapped}", flush=True)
                     # Diagnostics: query connection status and buffer frames
                     try:

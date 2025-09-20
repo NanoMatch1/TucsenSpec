@@ -96,6 +96,18 @@
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "build"
+		},
+		{
+			"label": "Run wait_frame test after SDK-aligned changes",
+			"type": "shell",
+			"command": "C:/Users/Raman/AppData/Local/Programs/Python/Python311/python.exe",
+			"args": [
+				"-u",
+				"tests/test_05_wait_frame.py"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
 		}
 	]
 }
