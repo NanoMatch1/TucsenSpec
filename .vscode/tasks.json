@@ -108,6 +108,42 @@
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "build"
+		},
+		{
+			"label": "Run XML fix test",
+			"type": "shell",
+			"command": "C:/Users/Raman/AppData/Local/Programs/Python/Python311/python.exe",
+			"args": [
+				"-u",
+				"tests/test_fix_xml_profile.py"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Run wait_frame after exposure set",
+			"type": "shell",
+			"command": "C:/Users/Raman/AppData/Local/Programs/Python/Python311/python.exe",
+			"args": [
+				"-u",
+				"tests/test_05_wait_frame.py"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Run wait_frame after exposure set (again)",
+			"type": "shell",
+			"command": "C:/Users/Raman/AppData/Local/Programs/Python/Python311/python.exe",
+			"args": [
+				"-u",
+				"tests/test_05_wait_frame.py"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
 		}
 	]
 }
