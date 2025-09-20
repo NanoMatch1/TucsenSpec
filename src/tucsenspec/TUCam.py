@@ -40,7 +40,7 @@ def get_camera_lib_path(manual=None):
 
 camera_lib_path = get_camera_lib_path()
 print(camera_lib_path)
-TUSDKdll = OleDLL(str(camera_lib_path))
+TUSDKdll = WinDLL(str(camera_lib_path))
 
 #  class typedef enum TUCAM status:
 class TUCAMRET(Enum):
@@ -805,7 +805,8 @@ TUCAM_Buf_AbortWait.argtypes = [c_void_p]
 TUCAM_Buf_AbortWait.restype  = TUCAMRET
 TUCAM_Buf_WaitForFrame   = TUSDKdll.TUCAM_Buf_WaitForFrame
 TUCAM_Buf_WaitForFrame.argtypes = [c_void_p, POINTER(TUCAM_FRAME), c_int32]
-TUCAM_Buf_WaitForFrame.restype  = TUCAMRET
+# Use numeric restype to avoid Enum mapping errors for unknown/signed codes
+TUCAM_Buf_WaitForFrame.restype  = c_int32
 TUCAM_Buf_CopyFrame      = TUSDKdll.TUCAM_Buf_CopyFrame
 TUCAM_Buf_CopyFrame.argtypes = [c_void_p, POINTER(TUCAM_FRAME)]
 TUCAM_Buf_CopyFrame.restype  = TUCAMRET

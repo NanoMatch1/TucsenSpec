@@ -1,0 +1,101 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run wait_frame test",
+			"type": "shell",
+			"command": "C:/Users/Raman/AppData/Local/Programs/Python/Python311/python.exe",
+			"args": [
+				"-u",
+				"tests/test_05_wait_frame.py"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Run wait_frame test (instrumented)",
+			"type": "shell",
+			"command": "C:/Users/Raman/AppData/Local/Programs/Python/Python311/python.exe",
+			"args": [
+				"-u",
+				"tests/test_05_wait_frame.py"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Run wait_frame test (instrumented) again",
+			"type": "shell",
+			"command": "C:/Users/Raman/AppData/Local/Programs/Python/Python311/python.exe",
+			"args": [
+				"-u",
+				"tests/test_05_wait_frame.py"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Run wait_frame test after restype fix",
+			"type": "shell",
+			"command": "C:/Users/Raman/AppData/Local/Programs/Python/Python311/python.exe",
+			"args": [
+				"-u",
+				"tests/test_05_wait_frame.py"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Run wait_frame test with signed codes",
+			"type": "shell",
+			"command": "C:/Users/Raman/AppData/Local/Programs/Python/Python311/python.exe",
+			"args": [
+				"-u",
+				"tests/test_05_wait_frame.py"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Run wait_frame test with diagnostics",
+			"type": "shell",
+			"command": "C:/Users/Raman/AppData/Local/Programs/Python/Python311/python.exe",
+			"args": [
+				"-u",
+				"tests/test_05_wait_frame.py"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Run wait_frame test with WinDLL",
+			"type": "shell",
+			"command": "C:/Users/Raman/AppData/Local/Programs/Python/Python311/python.exe",
+			"args": [
+				"-u",
+				"tests/test_05_wait_frame.py"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Run wait_frame test with exception handling",
+			"type": "shell",
+			"command": "C:/Users/Raman/AppData/Local/Programs/Python/Python311/python.exe",
+			"args": [
+				"-u",
+				"tests/test_05_wait_frame.py"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
+		}
+	]
+}
