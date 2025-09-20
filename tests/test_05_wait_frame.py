@@ -7,7 +7,7 @@ Created on 2024-01-03
 
 import ctypes
 from ctypes import *
-from src.tucsenspec.TUCam import *
+from tucsenspec.TUCam import *
 from enum import Enum
 import time
 import os

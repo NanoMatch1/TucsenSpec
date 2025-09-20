@@ -14,7 +14,7 @@ from ctypes import *
 from enum import Enum
 from importlib.resources import files
 
-def get_camera_lib_path():
+def get_camera_lib_path(manual=None):
     # Detect OS and architecture
     system = platform.system().lower()
     arch = platform.machine().lower()
