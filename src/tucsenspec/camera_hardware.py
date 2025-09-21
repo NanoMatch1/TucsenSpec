@@ -88,20 +88,18 @@ class RealHardware(CameraHardwareBase):
     def minimal_initialise(self):
         self.TUCAMINIT = TUCAM_INIT(0, self.scriptDir.encode('utf-8'))
         ret = TUCAM_Api_Init(pointer(self.TUCAMINIT), 5000)
-        if ret != self.conflag:
-            self.logger.error(f"Failed to initialize TUCam API: {ret}")
+        if not check_ok(ret, context="API init (minimal_initialise)", logger=self.logger):
             return
 
         self.open_camera()
         # self.set_exposure_time(self.camera.acqtime)
-        # self.set_roi(self.camera.roi) # Stream gets reopened here - 
+        # self.set_roi(self.camera.roi)
         self.open_stream()
 
     def initialise(self):
         self.TUCAMINIT = TUCAM_INIT(0, self.scriptDir.encode('utf-8'))
         ret = TUCAM_Api_Init(pointer(self.TUCAMINIT), 5000)
-        if ret != self.conflag:
-            self.logger.error(f"Failed to initialize TUCam API: {ret}")
+        if not check_ok(ret, context="API init (initialise)", logger=self.logger):
             return
 
         self.open_camera()
@@ -111,56 +109,49 @@ class RealHardware(CameraHardwareBase):
         self.set_image_processing(0)
         self.set_resolution(1)
         self.set_image_and_gain(1, 0)
-        self.set_roi(self.camera.roi) # Stream gets reopened here - 
+        self.set_roi(self.camera.roi)
         self.set_target_temperature(-20)
         self.set_fan_speed(3)
 
         self.open_stream()
 
-
     def open_stream(self):
         if self._stream_open:
-            self.camera.logger.debug(f"WARNING: tucam.open_stream: Stream is already open. Safely ignore if booting up.")
+            self.logger.debug("WARNING: tucam.open_stream: Stream is already open. Safely ignore if booting up.")
             return
         ret_buff = TUCAM_Buf_Alloc(self.TUCAMOPEN.hIdxTUCam, pointer(self.data.m_frame))
-        if ret_buff != self.conflag:
-            self.camera.logger.error(f"TUCAM: Failed to allocate buffer: {ret_buff}")
+        if not check_ok(ret_buff, context="allocate frame buffer", logger=self.logger):
             return
     
         ret_start = TUCAM_Cap_Start(self.TUCAMOPEN.hIdxTUCam, self.data.m_capmode.TUCCM_SEQUENCE.value)
-        if ret_start != self.conflag:
-            self.camera.logger.error(f"TUCAM: Failed to start capture: {ret_start}")
+        if not check_ok(ret_start, context="start capture", logger=self.logger):
             return
 
         self._stream_open = True
 
     def close_stream(self):
-        ret_buff = TUCAM_Buf_AbortWait(self.TUCAMOPEN.hIdxTUCam)
-        if ret_buff != self.conflag:
-            self.camera.logger.error(f"TUCAM: Failed to abort wait for buffer: {ret_buff}")
+        ret_abort = TUCAM_Buf_AbortWait(self.TUCAMOPEN.hIdxTUCam)
+        check_ok(ret_abort, context="abort wait for buffer", logger=self.logger)
 
         ret_stop = TUCAM_Cap_Stop(self.TUCAMOPEN.hIdxTUCam)
-        if ret_stop != self.conflag:
-            self.camera.logger.error(f"TUCAM: Failed to stop capture: {ret_stop}")
+        check_ok(ret_stop, context="stop capture", logger=self.logger)
 
         ret_release = TUCAM_Buf_Release(self.TUCAMOPEN.hIdxTUCam)
-        if ret_release != self.conflag:
-            self.camera.logger.error(f"TUCAM: Failed to release buffer: {ret_release}")
+        check_ok(ret_release, context="release buffer", logger=self.logger)
 
         self._stream_open = False
 
     def grab_frame(self, timeout=50000):
         ret = TUCAM_Buf_WaitForFrame(self.TUCAMOPEN.hIdxTUCam, pointer(self.data.m_frame), timeout)
-        if int(ret) != int(TUCAMRET.TUCAMRET_SUCCESS):
-            self.camera.logger.warning(f"TUCAM: Frame acquisition timeout or error. Return code: {ret}")
+        if not check_ok(ret, context="wait for frame", logger=self.logger):
             return None
 
         if not self.data.m_frame.pBuffer:
-            self.camera.logger.error("TUCAM: Frame buffer pointer is null.")
+            self.logger.error("TUCAM: Frame buffer pointer is null.")
             return None
 
         if self.data.m_frame.usWidth == 0 or self.data.m_frame.usHeight == 0:
-            self.camera.logger.error("TUCAM: Invalid frame dimensions received.")
+            self.logger.error("TUCAM: Invalid frame dimensions received.")
             return None
 
         image = self._frame_to_numpy()
@@ -176,89 +167,78 @@ class RealHardware(CameraHardwareBase):
         img_data = np.frombuffer(img_bytes.tobytes(), dtype=np.uint16)
         expected_elements = self.data.m_frame.usWidth * self.data.m_frame.usHeight * self.data.m_frame.ucChannels
         if img_data.size != expected_elements:
-            self.camera.logger.warning("Image element mismatch")
+            self.logger.warning("Image element mismatch")
         try:
             return np.reshape(img_data, (self.data.m_frame.usHeight, self.data.m_frame.usWidth, self.data.m_frame.ucChannels))
         except Exception as e:
-            self.camera.logger.error(f"Reshape failed: {e}")
+            self.logger.error(f"Reshape failed: {e}")
             return None
         
     def set_auto_exposure(self, state=0):
-        """ Set the auto exposure state of the camera.
-        Disabled by default. """
+        """ Set the auto exposure state of the camera. Disabled by default. """
         ret = TUCAM_Capa_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDCAPA.TUIDC_ATEXPOSURE.value, state)
-        if ret != self.conflag:
-            self.logger.error(f"TUCAM: Failed to set auto exposure: {ret}")
+        check_ok(ret, context=f"set auto exposure (state={state})", logger=self.logger)
 
     def set_exposure_time(self, value):
         self.close_stream()
 
-        value = int(np.floor(float(value) * 1000))
+        ms_value = int(np.floor(float(value) * 1000))
         ret1 = TUCAM_Capa_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDCAPA.TUIDC_ATEXPOSURE.value, 0)
-        if ret1 != self.conflag:
-            self.logger.error(f"TUCAM: Failed to disable auto exposure: {ret1}")
-            return
+        if not check_ok(ret1, context="disable auto exposure before set exposure", logger=self.logger):
+            return False
         
-        ret = TUCAM_Prop_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDPROP.TUIDP_EXPOSURETM.value, value, 0)
-        if ret != TUCAMRET.TUCAMRET_SUCCESS:
-            self.logger.error(f"TUCAM: Failed to set exposure time: {ret}")
+        ret = TUCAM_Prop_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDPROP.TUIDP_EXPOSURETM.value, ms_value, 0)
+        if not check_ok(ret, context=f"set exposure time (ms={ms_value})", logger=self.logger):
+            return False
         
         self.open_stream()
         return True
 
     def set_image_and_gain(self, img_mode, gain_level):
         ret_set = TUCAM_Capa_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDCAPA.TUIDC_IMGMODESELECT.value, img_mode)
-        if ret_set != self.conflag:
-            self.logger.error(f"TUCAM: Failed to set image mode: {ret_set}")
+        check_ok(ret_set, context=f"set image mode (mode={img_mode})", logger=self.logger)
 
         ret_gain = TUCAM_Prop_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDPROP.TUIDP_GLOBALGAIN.value, gain_level, 0)
-        if ret_gain != self.conflag:
-            self.logger.error(f"TUCAM: Failed to set gain level: {ret_gain}")
+        check_ok(ret_gain, context=f"set global gain (level={gain_level})", logger=self.logger)
 
     def set_image_processing(self, value):
         ret = TUCAM_Capa_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDCAPA.TUIDC_ENABLEIMGPRO.value, value)
-        if ret != self.conflag:
-            self.logger.error(f"TUCAM: Failed to set image processing: {ret}")
+        check_ok(ret, context=f"set image processing (enable={value})", logger=self.logger)
 
     def set_denoise(self, value):
         ret = TUCAM_Capa_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDCAPA.TUIDC_ENABLEDENOISE.value, value)
-        if ret != self.conflag:
-            self.logger.error(f"TUCAM: Failed to set denoise: {ret}")
+        check_ok(ret, context=f"set denoise (enable={value})", logger=self.logger)
 
     def set_resolution(self, resolution):
         ret = TUCAM_Capa_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDCAPA.TUIDC_RESOLUTION.value, resolution)
-        if ret != self.conflag:
-            self.logger.error(f"TUCAM: Failed to set resolution: {ret}")
+        check_ok(ret, context=f"set resolution (value={resolution})", logger=self.logger)
 
     def set_fan_speed(self, speed):
         ret = TUCAM_Capa_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDCAPA.TUIDC_FAN_GEAR.value, speed)
-        if ret != self.conflag:
-            self.logger.error(f"TUCAM: Failed to set fan speed: {ret}")
+        check_ok(ret, context=f"set fan speed (gear={speed})", logger=self.logger)
 
     def get_fan_speed(self):
         val = ctypes.c_int()
         ret = TUCAM_Capa_GetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDCAPA.TUIDC_FAN_GEAR.value, byref(val))
-        if ret != self.conflag:
-            self.logger.error(f"TUCAM: Failed to get fan speed: {ret}")
+        if not check_ok(ret, context="get fan speed", logger=self.logger):
+            return None
         return val.value
 
     def enable_auto_temperature_control(self, enable):
         val = 1 if enable else 0
         ret = TUCAM_Prop_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDPROP.TUIDP_AUTO_CTRLTEMP.value, val, 0)
-        if ret != self.conflag:
-            self.logger.error(f"TUCAM: Failed to set auto temperature control: {ret}")
+        check_ok(ret, context=f"set auto temperature control (enable={enable})", logger=self.logger)
 
     def set_target_temperature(self, target_celsius):
         prop_val = int(max(-50, min(50, float(target_celsius))) + 50)
         ret = TUCAM_Prop_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDPROP.TUIDP_TEMPERATURE.value, prop_val, 0)
-        if ret != self.conflag:
-            self.logger.error(f"TUCAM: Failed to set target temperature: {ret}")
+        check_ok(ret, context=f"set target temperature (C={target_celsius})", logger=self.logger)
 
     def get_temperature(self):
         temp = ctypes.c_double()
         ret = TUCAM_Prop_GetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDPROP.TUIDP_TEMPERATURE.value, byref(temp), 0)
-        if ret != self.conflag:
-            self.logger.error(f"TUCAM: Failed to get temperature: {ret}")
+        if not check_ok(ret, context="get temperature", logger=self.logger):
+            return None
         return temp.value
 
     def set_roi(self, roi_tuple):
@@ -268,15 +248,14 @@ class RealHardware(CameraHardwareBase):
         roi.bEnable = 1
         roi.nHOffset, roi.nVOffset, roi.nWidth, roi.nHeight = roi_tuple
         ret = TUCAM_Cap_SetROI(self.TUCAMOPEN.hIdxTUCam, roi)
-        if ret != self.conflag:
-            self.logger.error(f"TUCAM: Failed to set ROI: {ret}")
+        if not check_ok(ret, context=f"set ROI {roi_tuple}", logger=self.logger):
+            return
         
-        self.open_stream() #NOTE: resetting the ROI restarts the stream. This can cause issues if yu try to open later...
+        self.open_stream()  # NOTE: resetting the ROI restarts the stream.
 
     def set_hardware_binning(self, binning_level=1):
         ret = TUCAM_Capa_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDCAPA.TUIDC_RESOLUTION.value, binning_level)
-        if ret != self.conflag:
-            self.logger.error(f"TUCAM: Failed to set hardware binning: {ret}")
+        check_ok(ret, context=f"set hardware binning (level={binning_level})", logger=self.logger)
 
     def open_camera(self, Idx=0):
         if  Idx >= self.TUCAMINIT.uiCamCount:
@@ -287,8 +266,7 @@ class RealHardware(CameraHardwareBase):
         self.TUCAMOPEN = TUCAM_OPEN(Idx, 0)
 
         ret = TUCAM_Dev_Open(pointer(self.TUCAMOPEN))
-        if ret != self.conflag:
-            self.logger.error(f'TUCAM: Failed to open camera: {ret}')
+        if not check_ok(ret, context="open device", logger=self.logger):
             self.TUCAMOPEN.hIdxTUCam = 0
             return
 
@@ -301,17 +279,15 @@ class RealHardware(CameraHardwareBase):
     def close_camera(self):
         if self.TUCAMOPEN.hIdxTUCam:
             ret = TUCAM_Dev_Close(self.TUCAMOPEN.hIdxTUCam)
-            if ret != self.conflag:
-                self.logger.error(f'TUCAM: Failed to close camera: {ret}')
-            else:
+            check_ok(ret, context="close device", logger=self.logger)
+            if check_ok(ret, context="close device (final check)", logger=self.logger):
                 self.logger.info("Camera closed.")
             self.TUCAMOPEN.hIdxTUCam = 0
 
     
     def uninit_api(self):
         ret = TUCAM_Api_Uninit()
-        if ret != self.conflag:
-            self.logger.error(f"TUCAM: Failed to uninitialize API: {ret}")
+        check_ok(ret, context="API uninit", logger=self.logger)
 
 
 class SimulatedHardware(CameraHardwareBase):
@@ -412,7 +388,6 @@ class SimulatedHardware(CameraHardwareBase):
         if laser_wavelength is not None and wavelength_axis is not None:
             index = np.argmin(abs(wavelength_axis - laser_wavelength))
             if index == 0 or index == len(wavelength_axis) - 1:
-                
                 self.logger.debug("[SIM] Laser out of range; signal zero.")
                 return np.zeros((height, width), dtype=np.float32)
             if self.randomise_laser:

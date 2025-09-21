@@ -111,3 +111,16 @@ def check_ok(code, *, context: str = "", logger=None, raise_on_error: bool = Fal
         raise TucamError(msg)
 
     return False
+
+# --- USAGE ---
+# ret = camera.acquire_frame(...)
+
+# # Simple guard + warning/None pattern
+# if not check_ok(ret, context="frame acquisition", logger=self.camera.logger):
+#     return None
+
+# # Or if you prefer to fail fast:
+# check_ok(ret, context="open camera", logger=self.camera.logger, raise_on_error=True)
+
+# # For ad-hoc logs/debug:
+# self.camera.logger.debug("SDK returned: %s", summarize(ret))
