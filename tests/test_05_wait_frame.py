@@ -73,6 +73,7 @@ class Tucam():
                 timeout_ms = 3000 if i < 2 else 2000
                 try:
                     result = TUCAM_Buf_WaitForFrame(self.TUCAMOPEN.hIdxTUCam, pointer(m_frame), timeout_ms)
+                    breakpoint()
                     code = int(result)
                 except Exception:
                     code = 0x80000208

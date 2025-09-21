@@ -46,3 +46,4 @@ else:
 #TODO: 
 # 1. Create check on startup
 # 2. create try-except to identify timeout issue and fix automatically
+#3. Dynamically path to dlls in program files

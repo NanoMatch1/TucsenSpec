@@ -158,6 +158,10 @@ class TucsenCamera(QObject):
         self.save_transient_spectrum_cb = self.interface.acq_ctrl.save_spectrum_transient
         self.hardware.initialise()
 
+    @synchronized
+    def minimal_initialise(self):
+        self.hardware.minimal_initialise()
+
     def refresh(self):
         self.hardware.close_camera()
         self.hardware.uninit_api()

@@ -5,6 +5,8 @@ import time
 from contextlib import contextmanager
 from ctypes import byref
 
+from tucsenspec.tucam_ret import check_ok, summarize, is_success
+
 from ctypes import pointer, cast, POINTER
 from tucsenspec.TUCam import (
     TUCAM_ROI_ATTR,
@@ -83,6 +85,18 @@ class RealHardware(CameraHardwareBase):
 
         self.data = TucamData()
 
+    def minimal_initialise(self):
+        self.TUCAMINIT = TUCAM_INIT(0, self.scriptDir.encode('utf-8'))
+        ret = TUCAM_Api_Init(pointer(self.TUCAMINIT), 5000)
+        if ret != self.conflag:
+            self.logger.error(f"Failed to initialize TUCam API: {ret}")
+            return
+
+        self.open_camera()
+        # self.set_exposure_time(self.camera.acqtime)
+        # self.set_roi(self.camera.roi) # Stream gets reopened here - 
+        self.open_stream()
+
     def initialise(self):
         self.TUCAMINIT = TUCAM_INIT(0, self.scriptDir.encode('utf-8'))
         ret = TUCAM_Api_Init(pointer(self.TUCAMINIT), 5000)
@@ -92,7 +106,7 @@ class RealHardware(CameraHardwareBase):
 
         self.open_camera()
         self.set_hardware_binning()
-        self.set_auto_exposure(0)
+        # self.set_auto_exposure(0)
         self.set_exposure_time(self.camera.acqtime)
         self.set_image_processing(0)
         self.set_resolution(1)
@@ -137,7 +151,7 @@ class RealHardware(CameraHardwareBase):
 
     def grab_frame(self, timeout=50000):
         ret = TUCAM_Buf_WaitForFrame(self.TUCAMOPEN.hIdxTUCam, pointer(self.data.m_frame), timeout)
-        if ret != TUCAMRET.TUCAMRET_SUCCESS:
+        if int(ret) != int(TUCAMRET.TUCAMRET_SUCCESS):
             self.camera.logger.warning(f"TUCAM: Frame acquisition timeout or error. Return code: {ret}")
             return None
 
@@ -179,7 +193,7 @@ class RealHardware(CameraHardwareBase):
     def set_exposure_time(self, value):
         self.close_stream()
 
-        value = float(value) * 1000
+        value = int(np.floor(float(value) * 1000))
         ret1 = TUCAM_Capa_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDCAPA.TUIDC_ATEXPOSURE.value, 0)
         if ret1 != self.conflag:
             self.logger.error(f"TUCAM: Failed to disable auto exposure: {ret1}")
