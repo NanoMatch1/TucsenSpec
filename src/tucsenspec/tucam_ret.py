@@ -10,6 +10,11 @@ class TUCAMRET(IntEnum):
     TUCAMRET_NO_CAMERA   = 0x80000105
     TUCAMRET_NO_GRABBER  = 0x80000106
     TUCAMRET_NO_PROPERTY = 0x80000107
+    TUCAMRET_ABORT  = 0x80000207
+    TUCAMRET_TIMEOUT = 0x80000208
+    TUCAMRET_LOSTFRAME = 0x80000209
+    TUCAMRET_MISSFRAME = 0x8000020A
+    TUCAMRET_USB_STATUS_ERROR = 0x8000020B
 
 # Optional short descriptions (expand as you encounter more)
 _EXPLAIN = {
@@ -22,6 +27,11 @@ _EXPLAIN = {
     TUCAMRET.TUCAMRET_NO_CAMERA:   "No camera detected",
     TUCAMRET.TUCAMRET_NO_GRABBER:  "No frame grabber",
     TUCAMRET.TUCAMRET_NO_PROPERTY: "Property not supported",
+    TUCAMRET.TUCAMRET_ABORT: "Operation aborted",
+    TUCAMRET.TUCAMRET_TIMEOUT: "Camera timed out",
+    TUCAMRET.TUCAMRET_LOSTFRAME: "Frame lost",
+    TUCAMRET.TUCAMRET_MISSFRAME: "Frame missed",
+    TUCAMRET.TUCAMRET_USB_STATUS_ERROR: "USB status error"
 }
 
 class TucamError(RuntimeError):
