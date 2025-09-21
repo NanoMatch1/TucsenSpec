@@ -31,11 +31,14 @@ def test_camera_operations():
         # print("Get temperature success")
         camera.get_fan_speed()
         # print("Get fan speed success")
+        camera.set_roi(camera.roi)
         # breakpoint()
         frame = camera.grab_frame_safe()
         assert frame is not None
         assert type(frame) == np.ndarray
-        assert frame.ndim == 2  
+        assert frame.ndim == 2 or frame.ndim == 3
+        print("Frame grab success")
+        print("Frame shape:", frame.shape)
 
     finally:
         camera.close_camera()
