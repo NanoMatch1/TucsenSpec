@@ -224,6 +224,13 @@ class RealHardware(CameraHardwareBase):
             return None
         return val.value
 
+    def get_exposure_time(self):
+        val = ctypes.c_int()
+        ret = TUCAM_Prop_GetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDPROP.TUIDP_EXPOSURETM.value, byref(val), 0)
+        if not check_ok(ret, context="get exposure time", logger=self.logger):
+            return None
+        return val.value / 1000.0  # convert ms to seconds
+
     def enable_auto_temperature_control(self, enable):
         val = 1 if enable else 0
         ret = TUCAM_Prop_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDPROP.TUIDP_AUTO_CTRLTEMP.value, val, 0)

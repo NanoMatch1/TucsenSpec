@@ -25,7 +25,10 @@ def test_camera_operations():
         camera = TucsenCamera(DummyInterface())
         
         camera.minimal_initialise()
-        # camera.set_exposure_time(0.2)
+        camera.set_exposure_time(0.2)
+        exp = camera.get_exposure_time()
+        print("Exposure time:", exp)
+        breakpoint()
         # print("Eexposure success")
         camera.get_temperature()
         # print("Get temperature success")
