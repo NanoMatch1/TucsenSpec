@@ -65,6 +65,12 @@ class TucsenCamera(QObject):
     def dbg_dump(self):
         self.hardware.dbg_dump()
 
+    def import_extra_functions(self):
+        self.hardware.import_extra_functions()
+
+    def run_extra_functions(self):
+        self.hardware.run_extra_functions()
+
     @synchronized
     def get_temperature(self):
         """Returns the current camera temperature and emits a signal for the GUI."""
