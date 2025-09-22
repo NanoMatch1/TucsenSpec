@@ -25,6 +25,8 @@ def test_camera_operations():
         camera = TucsenCamera(DummyInterface())
         
         camera.minimal_initialise()
+        camera.import_extra_functions()
+        camera.run_extra_functions()
         # camera.init_capa()
         camera.dbg_dump()
         camera.set_exposure_time(0.001)

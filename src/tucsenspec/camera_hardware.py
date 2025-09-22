@@ -102,6 +102,15 @@ class RealHardware(CameraHardwareBase):
         # TUCAM_Capa_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDCAPA.TUIDC_IMGMODESELECT.value, c_int32(1))               # match your XML default (1)
         TUCAM_Capa_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDCAPA.TUIDC_ATEXPOSURE.value, c_int32(0))               # manual exposure
 
+    def import_extra_functions(self):
+        from tucsenspec.extra_functions import TUextra
+        self.extra = TUextra(self.camera)
+    
+    def run_extra_functions(self):
+        self.extra.camera_info()
+        self.extra.get_camera_parameters()
+        self.extra.get_gain_attributes()
+
 
     def dbg_dump(self):
         def gcap(id_):
