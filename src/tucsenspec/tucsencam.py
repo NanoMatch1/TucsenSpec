@@ -62,6 +62,9 @@ class TucsenCamera(QObject):
             self.logger.info('Using real camera hardware.')
         self.logger.info('Finished TucsenCamera init')
 
+    def dbg_dump(self):
+        self.hardware.dbg_dump()
+
     @synchronized
     def get_temperature(self):
         """Returns the current camera temperature and emits a signal for the GUI."""
@@ -153,6 +156,10 @@ class TucsenCamera(QObject):
         # self.close_stream()
         self.logger.info("Continuous acquisition stopped.")
 
+    def init_capa(self):
+        self.hardware.init_capabilities()
+        self.logger.info("Camera capabilities initialized.")
+
     @synchronized
     def initialise(self):
         self.save_transient_spectrum_cb = self.interface.acq_ctrl.save_spectrum_transient
@@ -226,6 +233,12 @@ class TucsenCamera(QObject):
             self.logger.info(f"Current fan speed: {speed} ({speed_name})")
         return speed
 
+    @synchronized
+    def get_exposure_time(self, report=True):
+        exp = self.hardware.get_exposure_time()
+        if report:
+            self.logger.info(f"Current exposure time: {exp} s")
+        return exp
     # @synchronized
     # def enable_auto_temperature_control(self, enable: bool, report: bool = True):
     #     self.hardware.enable_auto_temperature_control(enable)

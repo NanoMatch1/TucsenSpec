@@ -1,14 +1,14 @@
 <?TUXML version="1.0" encoding="UTF-8"?>
 <Cam_Dhyana400BSI Using="DftParameter">
     <ParameterSets Name="DftParameter">
-        <Resolution>1</Resolution>
+        <Resolution>0</Resolution>
         <PixelClock>0</PixelClock>
         <BitOfDepth>16</BitOfDepth>
         <GlobalGain>0</GlobalGain>
         <Brightness>255</Brightness>
         <ATExposure>0</ATExposure>
         <FMExposure>0</FMExposure>
-        <LNExposure>1</LNExposure>
+        <LNExposure>89</LNExposure>
         <BlackLevel>70</BlackLevel>
         <FlatFieldCorrection>0</FlatFieldCorrection>
         <Sharpness>0</Sharpness>
@@ -18,7 +18,7 @@
         <FanMode>3</FanMode>
         <ImageModeSelect>1</ImageModeSelect>
         <Enhance>0</Enhance>
-        <ImageProcessEnable>0</ImageProcessEnable>
+        <ImageProcessEnable>14</ImageProcessEnable>
         <DefectCorrectionValue>0</DefectCorrectionValue>
         <MultipleCameras>1</MultipleCameras>
         <Gamma>100</Gamma>

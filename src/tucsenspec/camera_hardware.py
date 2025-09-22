@@ -3,7 +3,7 @@ import numpy as np
 import time
 
 from contextlib import contextmanager
-from ctypes import byref
+from ctypes import byref, c_void_p, c_int32, c_uint32, c_int, c_double
 
 from tucsenspec.tucam_ret import check_ok, summarize, is_success
 
@@ -35,8 +35,17 @@ from tucsenspec.TUCam import (
     TUCAM_OPEN,
     TUCAMRET,
     TUCAM_INIT,
+    # TUIDC_PIXELCLOCK,
+    # TUIDC_ROLLINGSCANMODE,
+    # TUIDC_ENABLEOVERLAP,
+    # TUIDC_IMGMODESELECT,
+    # TUIDC_ATEXPOSURE
 )
 
+TUCAM_Prop_SetValue.argtypes = [c_void_p, c_int32, c_double, c_int32]
+TUCAM_Prop_SetValue.restype  = c_uint32
+TUCAM_Capa_SetValue.argtypes = [c_void_p, c_int32, c_int32]
+TUCAM_Capa_SetValue.restype  = c_uint32
 
 class TucamData:
     def __init__(self):
@@ -85,6 +94,37 @@ class RealHardware(CameraHardwareBase):
 
         self.data = TucamData()
 
+    def init_capabilities(self):
+        # int capabilities:
+        TUCAM_Capa_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDCAPA.TUIDC_PIXELCLOCK.value, c_int32(0))   # e.g., 1
+        TUCAM_Capa_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDCAPA.TUIDC_ROLLINGSCANMODE.value, c_int32(0))               # enable rolling scan if that’s default
+        TUCAM_Capa_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDCAPA.TUIDC_ENABLEOVERLAP.value, c_int32(0))               # disable overlap for sCMOS if unstable
+        # TUCAM_Capa_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDCAPA.TUIDC_IMGMODESELECT.value, c_int32(1))               # match your XML default (1)
+        TUCAM_Capa_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDCAPA.TUIDC_ATEXPOSURE.value, c_int32(0))               # manual exposure
+
+
+    def dbg_dump(self):
+        def gcap(id_):
+            v = c_int32()
+            TUCAM_Capa_GetValue(self.TUCAMOPEN.hIdxTUCam, id_, byref(v))
+            return v.value
+        def gprop(id_):
+            v = c_double()
+            TUCAM_Prop_GetValue(self.TUCAMOPEN.hIdxTUCam, id_, byref(v), 0)
+            return v.value
+        
+
+        self.logger.info("RES={} PIXCLK={} IMG_MODE={} ATEXP={}".format(
+            gcap(TUCAM_IDCAPA.TUIDC_RESOLUTION.value),
+            gcap(TUCAM_IDCAPA.TUIDC_PIXELCLOCK.value),
+            gcap(TUCAM_IDCAPA.TUIDC_IMGMODESELECT.value),
+            # gcap(TUCAM_IDCAPA.TUIDC_ENABLEOVERLAP.value),
+            gcap(TUCAM_IDCAPA.TUIDC_ATEXPOSURE.value)))
+        self.logger.info("EXPO_ms={}".format(
+            gprop(TUCAM_IDPROP.TUIDP_EXPOSURETM.value)))
+            # gprop(TUCAM_IDPROP.TUIDP_FRAME_RATE.value)))
+
+
     def minimal_initialise(self):
         self.TUCAMINIT = TUCAM_INIT(0, self.scriptDir.encode('utf-8'))
         ret = TUCAM_Api_Init(pointer(self.TUCAMINIT), 5000)
@@ -92,6 +132,12 @@ class RealHardware(CameraHardwareBase):
             return
 
         self.open_camera()
+        # self.set_image_processing(0)
+        # self.set_resolution(1)
+        # self.set_image_and_gain(5, 1)
+        self.set_roi(self.camera.roi)
+        self.set_target_temperature(-20)
+        self.set_fan_speed(3)
         # self.set_exposure_time(self.camera.acqtime)
         # self.set_roi(self.camera.roi)
         self.open_stream()
@@ -179,16 +225,19 @@ class RealHardware(CameraHardwareBase):
         ret = TUCAM_Capa_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDCAPA.TUIDC_ATEXPOSURE.value, state)
         check_ok(ret, context=f"set auto exposure (state={state})", logger=self.logger)
 
-    def set_exposure_time(self, value):
+    def set_exposure_time(self, value_s):
         self.close_stream()
 
-        ms_value = int(np.floor(float(value) * 1000))
         ret1 = TUCAM_Capa_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDCAPA.TUIDC_ATEXPOSURE.value, 0)
         if not check_ok(ret1, context="disable auto exposure before set exposure", logger=self.logger):
             return False
         
-        ret = TUCAM_Prop_SetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDPROP.TUIDP_EXPOSURETM.value, ms_value, 0)
-        if not check_ok(ret, context=f"set exposure time (ms={ms_value})", logger=self.logger):
+        ms = float(value_s) * 1000.0  # convert seconds -> milliseconds, preserve fractions
+        ret = TUCAM_Prop_SetValue(self.TUCAMOPEN.hIdxTUCam,
+                                    TUCAM_IDPROP.TUIDP_EXPOSURETM.value,
+                                    c_double(ms),  # pass double BY VALUE
+                                    0)
+        if not check_ok(ret, context=f"set exposure time (ms={ms:.3f})", logger=self.logger):
             return False
         
         self.open_stream()
@@ -225,7 +274,7 @@ class RealHardware(CameraHardwareBase):
         return val.value
 
     def get_exposure_time(self):
-        val = ctypes.c_int()
+        val = ctypes.c_double()
         ret = TUCAM_Prop_GetValue(self.TUCAMOPEN.hIdxTUCam, TUCAM_IDPROP.TUIDP_EXPOSURETM.value, byref(val), 0)
         if not check_ok(ret, context="get exposure time", logger=self.logger):
             return None
